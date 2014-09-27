@@ -1,0 +1,4 @@
+*.vbe
+*.vst
+*.pat
+Makefile*

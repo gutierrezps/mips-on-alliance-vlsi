@@ -1,0 +1,16 @@
+dpt_alu 	C
+dpt_buffer 	C
+dpt_four	C
+dpt_mux2_5b	C
+dpt_mux2	C
+dpt_mux4	C
+dpt_regfile	C
+dpt_reg		C
+dpt_signext	C
+dpt_sl2		C
+dpt_pcsl2	C
+ctrl_fsm	C
+ctrl_aludec	C
+and2		C
+or2			C
+nt			C
