@@ -62,15 +62,13 @@ int main() {
 	GENLIB_LOINS("dpt_mux2_5b", "rfwamux", "Instr[20:16]", "Instr[15:11]", "RegDst", "rfwa[4:0]", POWER);
 	GENLIB_LOINS("dpt_mux2", "rfwdmux", "ALUOut[31:0]", "Data[31:0]", "MemtoReg", "rfwd[31:0]", POWER);
 	GENLIB_LOINS("dpt_regfile", "rf", "CLK", "RegWrite", "Instr[25:21]", "Instr[20:16]", "rfwa[4:0]", "rfwd[31:0]", "rfd1[31:0]", "rfd2[31:0]", POWER);
-	GENLIB_LOINS("dpt_reg", "rfrd1reg", "CLK", "Reset", "Vdd", "rfd1[31:0]", "d1out[31:0]", POWER);
-	GENLIB_LOINS("dpt_reg", "rfrd2reg", "CLK", "Reset", "Vdd", "rfd2[31:0]", "d2out[31:0]", POWER);
 	
 	// alu
 	GENLIB_LOINS("dpt_signext", "signext", "Instr[15:0]", "signimm[31:0]", POWER);
 	GENLIB_LOINS("dpt_sl2", "shift2", "signimm[31:0]", "signimmsh[31:0]", POWER);
-	GENLIB_LOINS("dpt_mux2", "srcamux", "pc[31:0]", "d1out[31:0]", "ALUSrcA", "srca[31:0]", POWER);
+	GENLIB_LOINS("dpt_mux2", "srcamux", "pc[31:0]", "rfd1[31:0]", "ALUSrcA", "srca[31:0]", POWER);
 	GENLIB_LOINS("dpt_four", "four", "FourVect[31:0]", POWER);
-	GENLIB_LOINS("dpt_mux4", "srcbmux", "d2out[31:0]", "FourVect[31:0]", "signimm[31:0]", "signimmsh[31:0]", "ALUSrcB[1:0]", "srcb[31:0]", POWER);
+	GENLIB_LOINS("dpt_mux4", "srcbmux", "rfd2[31:0]", "FourVect[31:0]", "signimm[31:0]", "signimmsh[31:0]", "ALUSrcB[1:0]", "srcb[31:0]", POWER);
 	GENLIB_LOINS("dpt_alu", "alu", "srca[31:0]", "srcb[31:0]", "ALUControl[2:0]", "ALUResult[31:0]", "ALUZero", POWER);
 	GENLIB_LOINS("dpt_reg", "alureg", "CLK", "Reset", "Vdd", "ALUResult[31:0]", "ALUOut[31:0]", POWER);
 	
@@ -82,7 +80,7 @@ int main() {
 	}
 	
 	for(i = 0; i < 32; i++) {
-		GENLIB_LOINS("dpt_buffer", GENLIB_NAME("WriteData_%d", i), GENLIB_ELM("d2out", i), GENLIB_ELM("WriteData", i), POWER);
+		GENLIB_LOINS("dpt_buffer", GENLIB_NAME("WriteData_%d", i), GENLIB_ELM("rfd2", i), GENLIB_ELM("WriteData", i), POWER);
 		//GENLIB_LOINS("dpt_buffer", GENLIB_NAME("srca_%d", i), GENLIB_ELM("srca", i), GENLIB_ELM("SrcA_o", i), POWER);
 		//GENLIB_LOINS("dpt_buffer", GENLIB_NAME("srcb_%d", i), GENLIB_ELM("srcb", i), GENLIB_ELM("SrcB_o", i), POWER);
 	}
