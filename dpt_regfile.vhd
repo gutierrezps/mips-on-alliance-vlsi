@@ -4,11 +4,11 @@ use IEEE.STD_LOGIC_arith.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.all;
 
 entity dpt_regfile is
-port( clk, we3      : in STD_LOGIC;
-	  a1, a2, a3    : in STD_LOGIC_VECTOR(4 downto 0);
-	  wd3           : in STD_LOGIC_VECTOR(31 downto 0);
-	  rd1, rd2      : out STD_LOGIC_VECTOR(31 downto 0);
-	  vdd, vss		: in STD_LOGIC);
+port( CLK, WE3      : in STD_LOGIC;
+	  A1, A2, A3    : in STD_LOGIC_VECTOR(4 downto 0);
+	  WD3           : in STD_LOGIC_VECTOR(31 downto 0);
+	  RD1, RD2      : out STD_LOGIC_VECTOR(31 downto 0);
+	  Vdd, Vss		: in STD_LOGIC);
 end dpt_regfile;
 
 architecture behave of dpt_regfile is
@@ -16,24 +16,23 @@ architecture behave of dpt_regfile is
 	signal mem: ramtype;
 
 begin
-	process(a1, a2, mem) begin
+	process(CLK) begin
+		if rising_edge(CLK) then
+            if (conv_integer(A1) = 0) then
+                RD1 <= X"00000000"; 
+            else
+                RD1 <= mem(conv_integer(A1));
+            end if;
 
-		if (conv_integer(a1) = 0) then
-			rd1 <= X"00000000"; 
-		else
-			rd1 <= mem(conv_integer(a1));
-		end if;
+            if (conv_integer(A2) = 0) then
+                RD2 <= X"00000000";
+            else
+                RD2 <= mem(conv_integer(A2));
+            end if;
 
-		if (conv_integer(a2) = 0) then
-			rd2 <= X"00000000";
-		else
-			rd2 <= mem(conv_integer(a2));
-		end if;
-	end process;
-
-	process(clk) begin
-		if rising_edge(clk) and we3 = '1' then
-			mem(CONV_INTEGER(a3)) <= wd3;
-		end if;
+            if WE3 = '1' then
+                mem(CONV_INTEGER(A3)) <= WD3;
+            end if;
+        end if;
 	end process;
 end;

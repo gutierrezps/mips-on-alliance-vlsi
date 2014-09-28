@@ -20,7 +20,7 @@ int main() {
     char patFilename[] = __FILE__;
     patFilename[ strlen(patFilename)-2 ] = '\0';
 
-	arq = fopen("instructions_datapath.txt", "r+");
+	arq = fopen("instructions/datapath.txt", "r+");
 	
 	if( !arq ) {
 		fprintf(stderr, "\nCouldn't open 'instructions_datapath.txt' file.\n");
