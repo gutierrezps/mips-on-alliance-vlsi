@@ -5,9 +5,15 @@
 #include "include/utils.c"
 
 int curvect = 0;
-char clk = 0;
+char CLK = 0;
 
-char* cvect() { return inttostr(curvect); }
+char * cvect() { return inttostr(curvect); }
+
+void toggleClock() {
+    CLK = !CLK;
+    AFFECT(cvect(), "CLK", inttostr(CLK));
+}
+
 
 #include "include/read_decode.c"
 #include "include/aludec.c"
@@ -72,15 +78,17 @@ int main() {
     
     FsmMode = MODE_DATAPATH;
     
-    FsmReset();
+    FsmReset();     // reset comes first because Control pins are inputs
+    
     curvect++;
-    clk = !clk;
-    AFFECT(cvect(), "CLK", inttostr(clk));
+    toggleClock();
+    
+    
     curvect++;
+    toggleClock();
+    
     AFFECT (cvect(), "Reset", "0");
-    clk = !clk;
-    AFFECT(cvect(), "CLK", inttostr(clk));
-//    curvect++;
+    curvect++;
     
 	while(1) {
         
@@ -93,8 +101,7 @@ int main() {
         }
         
         curvect++;
-        clk = !clk;
-        AFFECT(cvect(), "CLK", inttostr(clk));
+        toggleClock();
         
         if(FsmCurState == 0) {
             AFFECT(cvect(), "Opcode", inttostr(DecOpcode));
@@ -104,8 +111,7 @@ int main() {
         }
         
         curvect++;
-        clk = !clk;
-        AFFECT(cvect(), "CLK", inttostr(clk));
+        toggleClock();
         
 	}
 	

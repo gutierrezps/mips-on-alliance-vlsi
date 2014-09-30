@@ -120,9 +120,15 @@ void FsmAffectAll() {
 
 void FsmReset() {
     FsmNextState = 0;
-    FsmCurState = 0;
+    FsmCurState = 15;
     state0();
+    
     LABEL("FSM_Reset");
+    
+    FsmIRWrite = 0;
+    FsmPCWrite = 0;
+    FsmPCEn = 0;
+    
     
     FsmAffectAll();
 }

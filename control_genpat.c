@@ -5,9 +5,14 @@
 #include "include/utils.c"
 
 int curvect = 0;
-char clk = 0;
+char CLK = 0;
 
-char* cvect() { return inttostr(curvect); }
+char * cvect() { return inttostr(curvect); }
+
+void toggleClock() {
+    CLK = !CLK;
+    AFFECT(cvect(), "CLK", inttostr(CLK));
+}
 
 #include "include/read_decode.c"
 #include "include/aludec.c"
@@ -63,26 +68,30 @@ int main() {
 	AFFECT ("0", "Vss", "0");
 	AFFECT ("0", "CLK", "0");
     AFFECT ("0", "Reset", "1");
+    AFFECT ("0", "ALUZero", "0");
     AFFECT ("0", "Opcode", "0");
     AFFECT ("0", "Funct", "0");
     
     FsmMode = MODE_CONTROL;
     
-    FsmReset();
     curvect++;
-    AFFECT ("1", "Reset", "0");
+    toggleClock();
+    FsmReset();
+    
+    curvect++;
+    toggleClock();
+    
+    AFFECT (cvect(), "Reset", "0");
     curvect++;
     
 	while(1) {
     
-        clk = !clk;
-        AFFECT(cvect(), "CLK", inttostr(clk));
+        toggleClock();
         
         FsmRunState();
         
         curvect++;
-        clk = !clk;
-        AFFECT(cvect(), "CLK", inttostr(clk));
+        toggleClock();
         
         if(FsmNextState == 1) {
             if( !getNextInstr(arq) ) {
