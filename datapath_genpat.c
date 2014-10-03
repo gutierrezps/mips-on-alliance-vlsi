@@ -19,6 +19,7 @@ void toggleClock() {
 #include "include/aludec.c"
 #include "include/fsm.c"
 
+#include "include/datapath.c"
 
 int main() {
 	FILE *arq = NULL;
@@ -42,7 +43,7 @@ int main() {
 	DECLAR("WriteData"	, ":2", "X", OUT, "31 down to 0", "");
 	DECLAR("MemAdr"		, ":2", "X", OUT, "31 down to 0", "");
 	
-	DECLAR("OpCode"		, ":2", "X", OUT, "5 down to 0", "");
+	DECLAR("Opcode"		, ":2", "X", OUT, "5 down to 0", "");
 	DECLAR("Funct"		, ":2", "X", OUT, "5 down to 0", "");
 	
 	// Multiplexer Selects
@@ -54,20 +55,14 @@ int main() {
 	DECLAR("ALUSrcA"	, ":2", "B", IN , "", "");
 	DECLAR("ALUSrcB"	, ":2", "B", IN , "1 down to 0", "");
 	
-//	DECLAR("SrcA_o"	, ":2", "X", OUT, "31 down to 0", "");
-//	DECLAR("SrcB_o"	, ":2", "X", OUT, "31 down to 0", "");
-	
 	DECLAR("ALUControl"	, ":2", "B", IN , "2 down to 0", "");
 	DECLAR("ALUZero"	, ":2", "B", OUT, "", "");
 
 	DECLAR("PCSrc"		, ":2", "B", IN , "1 down to 0", "");
 	DECLAR("PCEn"		, ":2", "B", IN , "", "");
 
-
 	DECLAR ("Vdd"		, ":2", "B", IN , "", "");
 	DECLAR ("Vss"		, ":2", "B", IN , "", "");
-
-    
 
 	AFFECT ("0", "Vdd", "1");
 	AFFECT ("0", "Vss", "0");
@@ -93,25 +88,31 @@ int main() {
 	while(1) {
         
         FsmRunState();
+        
+        DptUpdateComb();
+        DptAffectAll();
+        
         if(FsmCurState == 0) {
             if( !getNextInstr(arq) ) {
                 break;
             }
             AFFECT(cvect(), "ReadData", inttohex(DecInstr));
+            DptReadData = DecInstr;
         }
         
         curvect++;
         toggleClock();
         
-        if(FsmCurState == 0) {
-            AFFECT(cvect(), "Opcode", inttostr(DecOpcode));
-            AFFECT(cvect(), "Funct" , inttostr(DecFunct));
-            FsmOpcode = DecOpcode;
-            FsmFunct = DecFunct;
-        }
+        DptUpdateSeq();
+        FsmOpcode = DptOpcode;
+        FsmFunct = DptFunct;
+        DptAffectAll();
         
         curvect++;
         toggleClock();
+        
+        //printf(" - ALUOut = %d\n", DptALUOut);
+        //printf(" - Regfile[$s0] = %s\n", inttostr(DptRegFile[16]));
         
 	}
 	
