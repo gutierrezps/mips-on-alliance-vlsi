@@ -1,8 +1,9 @@
 
 
-char DecOpcode, DecFunct, DecRd, DecRt, DecRs, DecImm;
+char DecOpcode, DecFunct, DecRs, DecRt, DecRd;
 
-int DecInstr;
+unsigned int DecInstr;
+signed int DecImm;
 
 char chOpcode[7], chFunct[7], chBuffer[9], chInstr[100], DecLine = 1;
 
@@ -34,16 +35,36 @@ char getNextInstr(FILE *fInstr) {
     DecFunct = 0;
     
     for(i = 0; i < 6; i++) {
-        chOpcode[i] = chInstr[i];
-        chFunct[i]  = chInstr[26 + i];
+        chOpcode[i] = chInstr[i];           // opcode = instr[0:5] (inverted order)
+        chFunct[i]  = chInstr[26 + i];      // funct  = instr[26:31]
         
         DecOpcode = (DecOpcode << 1) | ( chOpcode[i] - '0' );
         DecFunct  = (DecFunct  << 1) | ( chFunct[i]  - '0' );
     }
-    
+
     chOpcode[6] = '\0';
     chFunct[6]  = '\0';
     
+    DecRs = 0;
+    DecRt = 0;
+    DecRd = 0;
+    for(i = 0; i < 5; i++) {
+        DecRs = (DecRs << 1) | ( chInstr[i + 6] - '0' );        // rs = instr[6:10]
+        DecRt = (DecRt << 1) | ( chInstr[i + 11] - '0' );       // rt = instr[11:15]
+        DecRd = (DecRd << 1) | ( chInstr[i + 16] - '0' );       // rd = instr[16:20]
+    }
+    
+    DecImm = 0;
+    for(i = 0; i < 16; i++) {
+        DecImm = (DecImm << 1) | ( chInstr[i + 16] - '0' );     // imm = instr[16:31]
+    }
+    
+    if(DecImm > 32767) {
+        DecImm = DecImm - 1;
+        DecImm = ( ~DecImm ) & 0x0000FFFF;
+        DecImm = -DecImm;
+    }
+
     DecLine++;
     
     return 1;
