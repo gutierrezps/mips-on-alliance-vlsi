@@ -2,11 +2,11 @@
 
 typedef enum FsmModes {MODE_FSM = 1, MODE_CONTROL, MODE_DATAPATH};
 
-char FsmOpcode, FsmFunct, FsmMode = 0, FsmNextState, FsmCurState;
+char FsmOpcode = 0, FsmFunct = 0, FsmMode = 0, FsmNextState = 0, FsmCurState = 0;
 
-char FsmPCEn, FsmIorD, FsmIRWrite, FsmRegDst, FsmMemtoReg,
-     FsmRegWrite, FsmALUSrcA, FsmALUSrcB, FsmALUOp, FsmALUControl,
-     FsmALUZero, FsmPCSrc, FsmMemWrite, FsmBranch, FsmPCWrite;
+char FsmPCEn = 0, FsmIorD = 0, FsmIRWrite = 0, FsmRegDst = 0, FsmMemtoReg = 0,
+     FsmRegWrite = 0, FsmALUSrcA = 0, FsmALUSrcB = 0, FsmALUOp = 0, FsmALUControl = 0,
+     FsmALUZero = 0, FsmPCSrc = 0, FsmMemWrite = 0, FsmBranch = 0, FsmPCWrite = 0;
 
 
 void FsmAffectAll() {
@@ -32,13 +32,13 @@ void FsmAffectAll() {
         
     } else {
     
-        AFFECT(cvect(), "IorD", "0");
-        AFFECT(cvect(), "RegDst", "0");
-        AFFECT(cvect(), "MemtoReg", "0");
-        AFFECT(cvect(), "ALUSrcA", "0");
-        AFFECT(cvect(), "ALUSrcB", "0");
-        AFFECT(cvect(), "ALUControl", "0");
-        AFFECT(cvect(), "PCSrc", "0");
+        AFFECT(cvect(), "IorD",     inttostr(FsmIorD));
+        AFFECT(cvect(), "RegDst",   inttostr(FsmRegDst));
+        AFFECT(cvect(), "MemtoReg", inttostr(FsmMemtoReg));
+        AFFECT(cvect(), "ALUSrcA",  inttostr(FsmALUSrcA));
+        AFFECT(cvect(), "ALUSrcB",  inttostr(FsmALUSrcB));
+        AFFECT(cvect(), "ALUControl", inttostr(FsmALUControl));
+        AFFECT(cvect(), "PCSrc",    inttostr(FsmPCSrc));
     }
     
     /*
@@ -68,9 +68,8 @@ void FsmAffectAll() {
             if(FsmMode == MODE_FSM) {
                 AFFECT(cvect(), "ALUOp"     , inttostr(FsmALUOp));
             } else {
-                AFFECT(cvect(), "ALUControl", inttostr(ALUDec(FsmALUOp, FsmFunct)) );
-                printf("S%d: ALUControl: %d, ALUOp: %d, Funct: %d\n", FsmCurState, ALUDec(FsmALUOp, FsmFunct), FsmALUOp, FsmFunct);
-                
+                FsmALUControl = ALUDec(FsmALUOp, FsmFunct);
+                AFFECT(cvect(), "ALUControl", inttostr( FsmALUControl ) );
             }
             
             break;
