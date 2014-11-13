@@ -2,38 +2,36 @@
 #include "genpat.h"
 #include "include/utils.c"
 
-const int ATRASO = 1;
-
-int cur_vect = 0, clk = 0;
 
 
-void test_reg(int d, char en) {
-	AFFECT(inttostr(cur_vect), "d", inttohex(d));
-	AFFECT(inttostr(cur_vect), "en", inttostr(en));
+
+int curvect = 0, clk = 0;
+
+char *cvect() { return inttostr(curvect); }
+
+void test_reg(int d, char en, char rst) {
+	AFFECT(cvect(), "d"  , inttohex(d));
+	AFFECT(cvect(), "en" , inttostr(en));
+    AFFECT(cvect(), "rst", inttostr(rst));
 	
-	cur_vect += ATRASO;
+	curvect++;
 	clk = !clk;
-	AFFECT(inttostr(cur_vect), "clk", inttostr(clk));
+	AFFECT(cvect(), "clk", inttostr(clk));
 	
-	if( ATRASO > 1 ) {
-		cur_vect += ATRASO;
-		if( en ) AFFECT(inttostr(cur_vect), "q", inttohex(d));
-		AFFECT(inttostr(cur_vect), "vdd", "1");
-	} else {
-		if( en ) AFFECT(inttostr(cur_vect), "q", inttohex(d));
-		AFFECT(inttostr(cur_vect), "vdd", "1");
-		cur_vect += ATRASO;
-		AFFECT(inttostr(cur_vect), "clk", inttostr(clk));	
-	}
-	
-	clk = !clk;
-	cur_vect++;
-	AFFECT(inttostr(cur_vect), "clk", inttostr(clk));
+    if( rst ) {
+        AFFECT(cvect(), "q", "0");
+    } else if( en ) {
+        AFFECT(cvect(), "q", inttohex(d));
+    }
+    
+    curvect++;
+    clk = !clk;
+    AFFECT(cvect(), "clk", inttostr(clk));
 	
 }
 
 
-main () {
+void main () {
   
 	DEF_GENPAT("dpt_reg_genpat");
 
@@ -49,37 +47,47 @@ main () {
 
 	LABEL ("reg");
 
-	AFFECT("0", "vdd", "0b1");
-	AFFECT("0", "vss", "0b0");
-	
-	AFFECT("0", "en" , "0b1");
-	AFFECT("0", "rst", "0b0");
+	AFFECT("0", "vdd", "1");
+	AFFECT("0", "vss", "0");
 	AFFECT("0", "clk", inttostr(clk));
+    /*
 	AFFECT("0", "d", "0");
 
-
-	AFFECT(inttostr(cur_vect), "rst", "1");
+	AFFECT(cvect(), "rst", "1");
 	clk = !clk;
-	cur_vect++;
-	AFFECT(inttostr(cur_vect), "clk", inttostr(clk));
-	AFFECT(inttostr(cur_vect), "q", "0");
-	cur_vect++;
-	AFFECT(inttostr(cur_vect), "q", "0");
+	curvect++;
+	AFFECT(cvect(), "clk", inttostr(clk));
+	AFFECT(cvect(), "q", "0");
+	curvect++;
+	AFFECT(cvect(), "q", "0");
 	
-	cur_vect++;
+	curvect++;
 	clk = !clk;
-	AFFECT(inttostr(cur_vect), "clk", inttostr(clk));
-	AFFECT(inttostr(cur_vect), "rst", "0");
+	AFFECT(cvect(), "clk", inttostr(clk));
+	AFFECT(cvect(), "rst", "0");
 	
-		
-//	test_reg(0x00000000, 1);
-	test_reg(0xFFFFFFFF, 1);
-	test_reg(0x00000000, 0);
-	test_reg(0x00000000, 1);
-	test_reg(0xFFFFFFFF, 0);
-	test_reg(0xFFFFFFFF, 1);
+    */
+    
+    // reset register
+	test_reg(0x00000000, 0, 1);
+    
+    // test EN (low, high word)
+	test_reg(0xFFFFFFFF, 0, 0);
+    
+    // updates register (high word)
+	test_reg(0xFFFFFFFF, 1, 0);
+    
+    // test EN (low, low word)
+	test_reg(0x00000000, 0, 0);
+    
+    // updates register (low word)
+    test_reg(0x00000000, 1, 0);
+    
+    // update register (high word)
+	test_reg(0xFFFFFFFF, 1, 0);
+    
+    // reset register
+	test_reg(0x00000000, 1, 1);
 
-
-	
 	SAV_GENPAT();
 }
