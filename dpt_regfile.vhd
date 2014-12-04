@@ -17,21 +17,21 @@ architecture behave of dpt_regfile is
 begin
 	process( CLK ) begin
 		if rising_edge(CLK) and WE3 = '1' then
-            registers( CONV_INTEGER(A3) ) <= WD3;
+            registers( A3 ) <= WD3;
         end if;
     end process;
     
     process( A1, A2, registers ) begin
-        if( CONV_INTEGER(A1) = 0 ) then
+        if( A1 = 0 ) then
             RD1 <= X"00000000";
         else
-            RD1 <= registers( CONV_INTEGER(A1) );
+            RD1 <= registers( A1 );
         end if;
 
-        if( CONV_INTEGER(A2) = 0 ) then
+        if( A2 = 0 ) then
             RD2 <= X"00000000";
         else
-            RD2 <= registers( CONV_INTEGER(A2) );
+            RD2 <= registers( A2 );
         end if;
 	end process;
 end;
