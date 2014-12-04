@@ -23,3 +23,5 @@ int pow(int base, int exp) {
 	return res;
 }
 
+int curvect = 0;
+char * cvect() { return inttostr(curvect); }
