@@ -2,17 +2,13 @@
 #include "genpat.h"
 #include "include/utils.c"
 
-const int ATRASO = 1;
-
-
-int cur_vect = 0;
 
 void alu(int a, int b, char ctrl) {
 	int res;
 	
-	AFFECT(inttostr(cur_vect), "ctrl", inttostr(ctrl));
-	AFFECT(inttostr(cur_vect), "a", inttohex(a));
-	AFFECT(inttostr(cur_vect), "b", inttohex(b));
+	AFFECT(cvect(), "ctrl", inttostr(ctrl));
+	AFFECT(cvect(), "a", inttohex(a));
+	AFFECT(cvect(), "b", inttohex(b));
 	
 	switch(ctrl) {
 		case 0b000: res = a & b; break;
@@ -22,13 +18,11 @@ void alu(int a, int b, char ctrl) {
 		case 0b111: res = (a < b); break;
 	}
 	
-	if(ATRASO > 1) cur_vect += ATRASO;
+	AFFECT(cvect(), "res", inttohex(res));
+	AFFECT(cvect(), "zero", inttostr(res == 0));
+	AFFECT(cvect(), "vdd", "1");
 	
-	AFFECT(inttostr(cur_vect), "res", inttohex(res));
-	AFFECT(inttostr(cur_vect), "zero", inttostr(res == 0));
-	AFFECT(inttostr(cur_vect), "vdd", "1");
-	
-	cur_vect += ATRASO;
+	curvect++;
 }
 
 int main () {
