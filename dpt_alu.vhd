@@ -3,31 +3,36 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_arith.ALL;
 
 entity dpt_alu is
-port( a, b     : in  STD_LOGIC_VECTOR(31 DOWNTO 0);
-	  ctrl     : in  STD_LOGIC_VECTOR( 2 DOWNTO 0);
-	  res      : out STD_LOGIC_VECTOR(31 DOWNTO 0);
-	  zero     : out STD_LOGIC;
-	  vdd, vss : in  STD_LOGIC);
+port( A, B     : in  STD_LOGIC_VECTOR(31 DOWNTO 0);
+	  F        : in  STD_LOGIC_VECTOR( 2 DOWNTO 0);
+	  Y        : out STD_LOGIC_VECTOR(31 DOWNTO 0);
+	  Zero     : out STD_LOGIC;
+	  Vdd, Vss : in  STD_LOGIC);
 end dpt_alu;
 
 architecture behave of dpt_alu is
 
-	signal res_add, res_sub: STD_LOGIC_VECTOR(31 DOWNTO 0);
-	signal res_and, res_or:  STD_LOGIC_VECTOR(31 DOWNTO 0);
+	signal y_add, y_sub: STD_LOGIC_VECTOR(31 DOWNTO 0);
+	signal y_and, y_or:  STD_LOGIC_VECTOR(31 DOWNTO 0);
+	signal y_andnot, y_ornot:  STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 begin
-	res_add <= a + b;
-	res_sub <= a - b;
-	res_and <= a AND b;
-	res_or  <= a OR  b;
+	y_add <= A + B;
+	y_sub <= A - B;
+	y_and <= A AND B;
+	y_or  <= A OR  B;
+	y_andnot <= A AND NOT B;
+	y_ornot  <= A OR NOT B;
 	
-	with ctrl select
-		res <= res_and when "000",
-			   res_or  when "001",
-			   res_add when "010",
-			   res_sub when "110",
-			   "0" OR res_sub(31) when "111";
+	with F select
+		Y <= y_and when "000",
+			y_or  when "001",
+			y_add when "010",
+			y_andnot when "100",
+			y_ornot  when "101",
+			y_sub when "110",
+			"0" OR y_sub(31) when "111";
 	
-	zero <= '1' when res = X"00000000" else '0';
+	Zero <= '1' when Y = X"00000000" else '0';
 
 end;

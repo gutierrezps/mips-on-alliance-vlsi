@@ -14,8 +14,10 @@ void alu(int a, int b, char ctrl) {
 		case 0b000: res = a & b; break;
 		case 0b001: res = a | b; break;
 		case 0b010: res = a + b; break;
+		case 0b100: res = a & ~b; break;
+		case 0b101: res = a | ~b; break;
 		case 0b110: res = a - b; break;
-		case 0b111: res = (a < b); break;
+		case 0b111: res = a < b; break;
 	}
 	
 	AFFECT(cvect(), "res", inttohex(res));
@@ -60,7 +62,14 @@ int main () {
 	alu(255, 255, 2);
 	alu(-300, -20, 2);
 	alu(0xFFFFFFFF, 1, 2);
+	
+	// A AND ~B
+	alu(0xFFFFFFFF, 0, 0b100);
+	alu(0xFFFFFFFF, 0xFFFF0000, 0b100);
 
+	// A OR ~B
+	alu(0, 0, 0b101);
+	alu(0, 0xFFFF0000, 0b101);
 
 	// sub : ctrl = 6 (0b110)
 	alu(0x0F0F0F0F, 0x00F00F00, 6);

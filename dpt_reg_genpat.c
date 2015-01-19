@@ -2,12 +2,7 @@
 #include "genpat.h"
 #include "include/utils.c"
 
-
-
-
-int curvect = 0, clk = 0;
-
-char *cvect() { return inttostr(curvect); }
+int clk = 0;
 
 void test_reg(int d, char en, char rst) {
 	AFFECT(cvect(), "d"  , inttohex(d));
@@ -27,7 +22,6 @@ void test_reg(int d, char en, char rst) {
     curvect++;
     clk = !clk;
     AFFECT(cvect(), "clk", inttostr(clk));
-	
 }
 
 
@@ -50,23 +44,6 @@ void main () {
 	AFFECT("0", "vdd", "1");
 	AFFECT("0", "vss", "0");
 	AFFECT("0", "clk", inttostr(clk));
-    /*
-	AFFECT("0", "d", "0");
-
-	AFFECT(cvect(), "rst", "1");
-	clk = !clk;
-	curvect++;
-	AFFECT(cvect(), "clk", inttostr(clk));
-	AFFECT(cvect(), "q", "0");
-	curvect++;
-	AFFECT(cvect(), "q", "0");
-	
-	curvect++;
-	clk = !clk;
-	AFFECT(cvect(), "clk", inttostr(clk));
-	AFFECT(cvect(), "rst", "0");
-	
-    */
     
     // reset register
 	test_reg(0x00000000, 0, 1);
@@ -74,13 +51,13 @@ void main () {
     // test EN (low, high word)
 	test_reg(0xFFFFFFFF, 0, 0);
     
-    // updates register (high word)
+    // update register (high word)
 	test_reg(0xFFFFFFFF, 1, 0);
     
     // test EN (low, low word)
 	test_reg(0x00000000, 0, 0);
     
-    // updates register (low word)
+    // update register (low word)
     test_reg(0x00000000, 1, 0);
     
     // update register (high word)

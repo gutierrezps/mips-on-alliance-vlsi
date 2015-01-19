@@ -2,8 +2,6 @@
 #include "genpat.h"
 #include "include/utils.c"
 
-int cur_vect = 0;
-
 main () {
   
 	DEF_GENPAT("dpt_signext_genpat");
@@ -20,13 +18,13 @@ main () {
 	AFFECT("0", "vdd", "0b1");
 	AFFECT("0", "vss", "0b0");
 	
-	AFFECT(inttostr(cur_vect), "a", "0x0FFF");
-	AFFECT(inttostr(cur_vect), "y", "0x00000FFF");
+	AFFECT(cvect(), "a", "0x0FFF");
+	AFFECT(cvect(), "y", "0x00000FFF");
 	
-	cur_vect++;
+	curvect++;
 	
-	AFFECT(inttostr(cur_vect), "a", "0xF000");
-	AFFECT(inttostr(cur_vect), "y", "0xFFFFF000");
+	AFFECT(cvect(), "a", "0xF000");
+	AFFECT(cvect(), "y", "0xFFFFF000");
 	
 	SAV_GENPAT();
 }
