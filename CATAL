@@ -1,4 +1,6 @@
 dpt_alu 	C
+dpt_alu1 	C
+dpt_alu32_zero 	C
 dpt_buffer 	C
 dpt_four	C
 dpt_mux2_5b	C
