@@ -7,7 +7,7 @@ void alu(char a, char b_in, char binv, char cin, char f) {
 	char y[3];
 	char b = (binv == 1)?(~b_in & 1):b_in;
 	
-	AFFECT(cvect(), "F", inttostr(f));
+	AFFECT(cvect(), "Op", inttostr(f));
 	AFFECT(cvect(), "A", inttostr(a));
 	AFFECT(cvect(), "B", inttostr(b_in));
 	AFFECT(cvect(), "Binv", inttostr(binv));
@@ -17,9 +17,10 @@ void alu(char a, char b_in, char binv, char cin, char f) {
 	y[1] = a | b;
 	y[2] = a + b + cin;
 	
-	AFFECT(cvect(), "Y", inttostr(y[f] & 1));
+	AFFECT(cvect(), "Res", inttostr(y[f] & 1));
 	
-	AFFECT(cvect(), "Cout", inttostr((y[2] >> 1) & 1));
+	AFFECT(cvect(), "Set", inttostr(y[2] & 1));				// add result
+	AFFECT(cvect(), "Cout", inttostr((y[2] >> 1) & 1));		// bit 1 of sum
 	
 	AFFECT(cvect(), "Vdd", "1");
 	
@@ -35,16 +36,19 @@ int main() {
 	DECLAR("B"   , ":2", "B", IN , "", "");
 	DECLAR("Cin" , ":2", "B", IN , "", "");
 	DECLAR("Binv", ":2", "B", IN , "", "");
-	DECLAR("F"   , ":2", "B", IN ,  "1 down to 0", "");
+	DECLAR("Less", ":2", "B", IN , "", "");
+	DECLAR("Op"   , ":2", "B", IN ,  "1 down to 0", "");
 	
-	DECLAR("Y"   , ":2", "B", OUT, "", "");
+	DECLAR("Res"   , ":2", "B", OUT, "", "");
 	DECLAR("Cout", ":2", "B", OUT, "", "");
+	DECLAR("Set", ":2", "B", OUT, "", "");
 	
 	DECLAR("Vdd" , ":2", "B", IN , "", "" );
 	DECLAR("Vss" , ":2", "B", IN , "", "" );
 
-	AFFECT("0", "Vdd", "0b1");
-	AFFECT("0", "Vss", "0b0");
+	AFFECT("0", "Vdd", "1");
+	AFFECT("0", "Vss", "0");
+	AFFECT("0", "Less", "0");
 	
 	
 	/******
