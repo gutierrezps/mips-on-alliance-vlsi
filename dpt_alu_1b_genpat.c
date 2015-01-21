@@ -3,12 +3,14 @@
 #include "include/utils.c"
 
 
-void alu(char a, char b, char cin, char f) {
+void alu(char a, char b_in, char binv, char cin, char f) {
 	char y[3];
+	char b = (binv == 1)?(~b_in & 1):b_in;
 	
 	AFFECT(cvect(), "F", inttostr(f));
 	AFFECT(cvect(), "A", inttostr(a));
-	AFFECT(cvect(), "B", inttostr(b));
+	AFFECT(cvect(), "B", inttostr(b_in));
+	AFFECT(cvect(), "Binv", inttostr(binv));
 	AFFECT(cvect(), "Cin", inttostr(cin));
 	
 	y[0] = a & b;
@@ -25,13 +27,14 @@ void alu(char a, char b, char cin, char f) {
 }
 
 int main() {
-	char a, b, cin, f;
+	char a, b, cin, binv, f;
 	
 	DEF_GENPAT("dpt_alu_1b_genpat");
 
 	DECLAR("A"   , ":2", "B", IN , "", "");
 	DECLAR("B"   , ":2", "B", IN , "", "");
 	DECLAR("Cin" , ":2", "B", IN , "", "");
+	DECLAR("Binv", ":2", "B", IN , "", "");
 	DECLAR("F"   , ":2", "B", IN ,  "1 down to 0", "");
 	
 	DECLAR("Y"   , ":2", "B", OUT, "", "");
@@ -54,9 +57,10 @@ int main() {
 	
 	for(f = 0; f <= 2; f++)
 		for(cin = 0; cin < 2; cin++)
-			for(b = 0; b < 2; b++)
-				for(a = 0; a < 2; a++)
-					alu(a, b, cin, f);
+			for(binv = 0; binv < 2; binv++)
+				for(b = 0; b < 2; b++)
+					for(a = 0; a < 2; a++)
+						alu(a, b, binv, cin, f);
 	
 	SAV_GENPAT();
 	
