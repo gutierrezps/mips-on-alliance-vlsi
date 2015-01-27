@@ -1,85 +1,107 @@
-#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 #include "genpat.h"
 #include "include/utils.c"
 
 
-void alu(int a, int b, char ctrl) {
-	int res;
+void ALU(int A, int B, char Ctrl) {
+	int Res;
 	
-	AFFECT(cvect(), "ctrl", inttostr(ctrl));
-	AFFECT(cvect(), "a", inttohex(a));
-	AFFECT(cvect(), "b", inttohex(b));
+	AFFECT(cvect(), "A", inttohex(A));
+	AFFECT(cvect(), "B", inttohex(B));
+	AFFECT(cvect(), "Ctrl", inttostr(Ctrl));
 	
-	switch(ctrl) {
-		case 0b000: res = a & b; break;
-		case 0b001: res = a | b; break;
-		case 0b010: res = a + b; break;
-		case 0b100: res = a & ~b; break;
-		case 0b101: res = a | ~b; break;
-		case 0b110: res = a - b; break;
-		case 0b111: res = a < b; break;
+	switch(Ctrl) {
+		case 0b000: Res = A & B; break;
+		case 0b001: Res = A | B; break;
+		case 0b010: Res = A + B; break;
+		case 0b100: Res = A & ~B; break;
+		case 0b101: Res = A | ~B; break;
+		case 0b110: Res = A - B; break;
+		case 0b111: Res = A < B; break;
 	}
 	
-	AFFECT(cvect(), "res", inttohex(res));
-	AFFECT(cvect(), "zero", inttostr(res == 0));
-	AFFECT(cvect(), "vdd", "1");
+	AFFECT(cvect(), "Res", inttohex(Res));
+	AFFECT(cvect(), "Zero", inttostr(Res == 0));
+	AFFECT(cvect(), "Vdd", "1");
 	
 	curvect++;
 }
 
 int main () {
-  
+	int i;
+	
+	srand(time(NULL));
+	
 	DEF_GENPAT("dpt_alu_genpat");
 
-	DECLAR("a"   , ":2", "X", IN , "31 down to 0", "");
-	DECLAR("b"   , ":2", "X", IN , "31 down to 0", "");
-	DECLAR("ctrl", ":2", "X", IN ,  "2 down to 0", "");
+	DECLAR("A"   , ":2", "X", IN , "31 down to 0", "");
+	DECLAR("B"   , ":2", "X", IN , "31 down to 0", "");
+	DECLAR("Ctrl", ":2", "X", IN ,  "2 down to 0", "");
 	
-	DECLAR("res" , ":2", "X", OUT, "31 down to 0", "");
-	DECLAR("zero", ":2", "B", OUT, "", "" );
+	DECLAR("Res" , ":2", "X", OUT, "31 down to 0", "");
+	DECLAR("Zero", ":2", "B", OUT, "", "" );
 	
-	DECLAR("vdd" , ":2", "B", IN , "", "" );
-	DECLAR("vss" , ":2", "B", IN , "", "" );
+	DECLAR("Vdd" , ":2", "B", IN , "", "" );
+	DECLAR("Vss" , ":2", "B", IN , "", "" );
 
-	LABEL ("alu");
+	LABEL ("ALU");
 
-	AFFECT("0", "vdd", "0b1");
-	AFFECT("0", "vss", "0b0");
+	AFFECT("0", "Vdd", "0b1");
+	AFFECT("0", "Vss", "0b0");
 	
 	
-	// and : ctrl = 0 (0b000)
-	alu(0xF0F0F0F0, 0x0F0F0F0F, 0);
-	alu(0xFFFF0000, 0xFFFFFFFF, 0);
-	alu(0xFFFFFFFF, 0x0000FFFF, 0);
+	// AND : Ctrl = 0
+	ALU(0x00000000, 0x00000000, 0);
+	ALU(0x00000000, 0xFFFFFFFF, 0);
+	ALU(0xFFFFFFFF, 0x00000000, 0);
+	ALU(0xFFFFFFFF, 0xFFFFFFFF, 0);
 	
 	
-	// or : ctrl = 1 (0b001)
-	alu(0xF0F0F0F0, 0x0F0F0F0F, 1);
-	alu(0x00FF000F, 0xF0F00F00, 1);	
+	// OR : Ctrl = 1
+	ALU(0x00000000, 0x00000000, 1);
+	ALU(0x00000000, 0xFFFFFFFF, 1);
+	ALU(0xFFFFFFFF, 0x00000000, 1);
+	ALU(0xFFFFFFFF, 0xFFFFFFFF, 1);	
 	
 	
 	// add : ctrl = 2 (0b010)
-	alu(255, 255, 2);
-	alu(-300, -20, 2);
-	alu(0xFFFFFFFF, 1, 2);
+	ALU(0xFFFFFFFF, 1, 2);		// test all carry bits, overflow and zero flag
 	
-	// A AND ~B
-	alu(0xFFFFFFFF, 0, 0b100);
-	alu(0xFFFFFFFF, 0xFFFF0000, 0b100);
+	for(i = 0; i < 10; i++) {
+		ALU(rand(), rand(), 2);
+	}
+	
+	
+	// A AND ~B : Ctrl = 4
+	ALU(0x00000000, 0x00000000, 4);
+	ALU(0x00000000, 0xFFFFFFFF, 4);
+	ALU(0xFFFFFFFF, 0x00000000, 4);
+	ALU(0xFFFFFFFF, 0xFFFFFFFF, 4);
 
-	// A OR ~B
-	alu(0, 0, 0b101);
-	alu(0, 0xFFFF0000, 0b101);
+	// A OR ~B : Ctrl = 5
+	ALU(0x00000000, 0x00000000, 5);
+	ALU(0x00000000, 0xFFFFFFFF, 5);
+	ALU(0xFFFFFFFF, 0x00000000, 5);
+	ALU(0xFFFFFFFF, 0xFFFFFFFF, 5);
 
 	// sub : ctrl = 6 (0b110)
-	alu(0x0F0F0F0F, 0x00F00F00, 6);
-	alu(0xFFFFFFFF, 0xFFFFFFFF, 6);
-	alu(0x00000000, 0x00000001, 6);
+	ALU(0x0F0F0F0F, 0x00F00F00, 6);
+	ALU(0xFFFFFFFF, 0xFFFFFFFF, 6);
+	ALU(0x00000000, 0x00000001, 6);
+	
+	for(i = 0; i < 10; i++) {
+		ALU(rand(), rand(), 6);
+	}
 	
 	
 	// slt : ctrl = 7 (0b111)
-	alu(-300, 255, 7);
-	alu(25, -30, 7);
+	ALU(-300, 255, 7);
+	ALU(25, -30, 7);
+	
+	for(i = 0; i < 10; i++) {
+		ALU(rand(), rand(), 7);
+	}
 	
 	SAV_GENPAT();
 	

@@ -1,4 +1,4 @@
-#include <genlib.h>
+#include "genlib.h"
 #include "include/utils.c"
 
 #define POWER "Vdd", "Vss", NULL
@@ -23,7 +23,7 @@ int main() {
 	ALU1 pins: A, B, Cin, Less, Binv, Op, Res, Cout, Set, Vdd, Vss
 	*/
 	
-	
+	// ALU[0]
 	GENLIB_LOINS("dpt_alu1", "alu_0",
 						"A[0]", "B[0]",
 						"Ctrl[2]", "Set[31]",
@@ -31,6 +31,7 @@ int main() {
 						"Res_i[0]", "Cout[0]",
 						"Set[0]", POWER);
 	
+	// ALU[1..30]
 	for(i = 1; i < 31; i++) {
 		GENLIB_LOINS("dpt_alu1", GENLIB_NAME("alu_%d", i ),
 						GENLIB_ELM("A", i),			// A
@@ -45,6 +46,7 @@ int main() {
 						POWER);
 	}
 	
+	// ALU[31]
 	GENLIB_LOINS("dpt_alu1", "alu_31",
 						"A[31]", "B[31]",
 						"Cout[30]", "Vss",
@@ -52,8 +54,10 @@ int main() {
 						"Res_i[31]", "Cout[31]",
 						"Set[31]", POWER);
 
+	// Zero detector circuit
 	GENLIB_LOINS("dpt_alu32_zero", "alu_zero", "Res_i[31:0]", "Zero", POWER);
 	
+	// Buffers for result signals
 	for(i = 0; i < 32; i++) {
 		GENLIB_LOINS("dpt_buffer", GENLIB_NAME("res_buff_%d", i), GENLIB_ELM("Res_i", i), GENLIB_ELM("Res", i), POWER);
 	}

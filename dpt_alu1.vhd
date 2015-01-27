@@ -1,18 +1,18 @@
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_arith.ALL;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.STD_LOGIC_arith.ALL;
 
-entity dpt_alu_1b is
-port( A, B     : in  STD_LOGIC;
-	  Cin, Less: in STD_LOGIC;
-	  Binv     : in STD_LOGIC;
-	  Op       : in  STD_LOGIC_VECTOR( 1 DOWNTO 0);
-	  Res, Cout: out STD_LOGIC;
-	  Set      : out STD_LOGIC;
-	  Vdd, Vss : in  STD_LOGIC);
-end dpt_alu_1b;
+ENTITY dpt_alu1 IS
+PORT( A, B     : IN  STD_LOGIC;
+	  Cin, Less: IN  STD_LOGIC;
+	  Binv     : IN  STD_LOGIC;
+	  Op       : IN  STD_LOGIC_VECTOR( 1 DOWNTO 0);
+	  Res, Cout: OUT STD_LOGIC;
+	  Set      : OUT STD_LOGIC;
+	  Vdd, Vss : IN  STD_LOGIC);
+END dpt_alu1;
 
-architecture behave of dpt_alu_1b is
+architecture behave of dpt_alu1 is
 
 	signal res_and, res_or:  STD_LOGIC;
 	signal res_add, bb:  STD_LOGIC;
@@ -22,7 +22,8 @@ begin
 	
 	res_and <= A AND bb;
 	res_or  <= A OR bb;
-	res_add <= ( (NOT Cin) AND (A XOR bb) ) OR ( Cin AND NOT (A XOR bb) );
+	--res_add <= ( (NOT Cin) AND (A XOR bb) ) OR ( Cin AND NOT (A XOR bb) );
+	res_add <= A XOR B XOR Cin;
 	
 	with Op select
 		Res <= res_and WHEN "00",
