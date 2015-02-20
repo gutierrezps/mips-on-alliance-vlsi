@@ -17,7 +17,7 @@ int main() {
 	GENLIB_LOCON("Zero"     , OUT, "Zero");
 	
 	GENLIB_LOCON("Vdd" 	, IN, "Vdd");
-	GENLIB_LOCON("Vss" 	, IN, "Vss");	
+	GENLIB_LOCON("Vss" 	, IN, "Vss");
 	
 	/*
 	ALU1 pins: A, B, Cin, Less, Binv, Op, Res, Cout, Set, Vdd, Vss

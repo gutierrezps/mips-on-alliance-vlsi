@@ -15,7 +15,7 @@ char *inttohex(int num) {
 	return(str);
 }
 
-int pow(int base, int exp) {
+int mypow(int base, int exp) {
 	int i, res = 1;
 	for(i = 1; i <= exp; i++) {
 		res *= base;

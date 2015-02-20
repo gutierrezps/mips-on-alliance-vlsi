@@ -1,6 +1,6 @@
 
 
-typedef enum FsmModes {MODE_FSM = 1, MODE_CONTROL, MODE_DATAPATH};
+enum FsmModes {MODE_FSM = 1, MODE_CONTROL, MODE_DATAPATH} FsmModes;
 
 char FsmOpcode = 0, FsmFunct = 0, FsmMode = 0, FsmNextState = 0, FsmCurState = 0;
 

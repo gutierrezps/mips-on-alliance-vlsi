@@ -4,11 +4,7 @@
 #include "genpat.h"
 #include "include/utils.c"
 
-int curvect = 0;
 char CLK = 0;
-
-char * cvect() { return inttostr(curvect); }
-
 void toggleClock() {
     CLK = !CLK;
     AFFECT(cvect(), "CLK", inttostr(CLK));

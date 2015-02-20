@@ -12,26 +12,25 @@ PORT( A, B     : IN  STD_LOGIC;
 	  Vdd, Vss : IN  STD_LOGIC);
 END dpt_alu1;
 
-architecture behave of dpt_alu1 is
+ARCHITECTURE behave OF dpt_alu1 IS
 
-	signal res_and, res_or:  STD_LOGIC;
-	signal res_add, bb:  STD_LOGIC;
+	SIGNAL res_and, res_or:  STD_LOGIC;
+	SIGNAL res_add, BB:  STD_LOGIC;
 
-begin
-	bb <= B WHEN Binv = "0" ELSE NOT B;
+BEGIN
+	BB <= B WHEN Binv = "0" ELSE NOT B;
 	
-	res_and <= A AND bb;
-	res_or  <= A OR bb;
-	--res_add <= ( (NOT Cin) AND (A XOR bb) ) OR ( Cin AND NOT (A XOR bb) );
+	res_and <= A AND BB;
+	res_or  <= A OR BB;
 	res_add <= A XOR B XOR Cin;
 	
-	with Op select
+	WITH Op SELECT
 		Res <= res_and WHEN "00",
 			   res_or  WHEN "01",
 			   res_add WHEN "10",
 			   Less    WHEN "11";
 	
-	Cout <= (A AND bb) OR (Cin AND (A XOR bb));
+	Cout <= (A AND BB) OR (Cin AND (A XOR BB));
 	Set <= res_add;
 	
-end;
+END;
