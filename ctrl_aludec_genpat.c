@@ -2,12 +2,6 @@
 #include "genpat.h"
 #include "include/utils.c"
 
-int curvect = 0;
-
-char* cvect() {
-	return inttostr(curvect);
-}
-
 void aludec(char aluop, char funct) {
 	
 	char alucontrol;
@@ -16,7 +10,7 @@ void aludec(char aluop, char funct) {
 		
 	else if( aluop == 1 ) alucontrol = 0b110;
 
-	else {
+	else if( aluop == 2 ) {
 		switch( funct ) {
 			case 0b100000: alucontrol = 0b010; break;
 			case 0b100010: alucontrol = 0b110; break;
@@ -25,10 +19,15 @@ void aludec(char aluop, char funct) {
 			case 0b101010: alucontrol = 0b111; break;
 		}
 	}
+	else {
+		AFFECT(cvect(), "alucontrol", "0b***");
+	}
 	
 	AFFECT(cvect(), "aluop", inttostr(aluop));
 	AFFECT(cvect(), "funct", inttostr(funct));
-	AFFECT(cvect(), "alucontrol", inttostr(alucontrol));
+	
+	if(aluop != 3)
+		AFFECT(cvect(), "alucontrol", inttostr(alucontrol));
 	
 	curvect++;
 }
@@ -57,6 +56,8 @@ int main () {
 	aludec(2, 0b100100);
 	aludec(2, 0b100101);
 	aludec(2, 0b101010);
+	
+	aludec(3, 0b101010);
 	
 	SAV_GENPAT();
 	
