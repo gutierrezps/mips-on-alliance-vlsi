@@ -85,6 +85,7 @@ int main() {
 		//GENLIB_LOINS("dpt_buffer", GENLIB_NAME("srcb_%d", i), GENLIB_ELM("srcb", i), GENLIB_ELM("SrcB_o", i), POWER);
 	}
 	
-	
 	GENLIB_SAVE_LOFIG();
+	
+	return 0;
 }
