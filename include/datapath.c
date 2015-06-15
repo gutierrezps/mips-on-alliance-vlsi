@@ -26,9 +26,9 @@ int ALU(int A, int B, char Ctrl) {
 		case 0b111: Res = A < B;  break;
 	}
 	
-	ALUZero = Y == 0;
+	ALUZero = Res == 0;
 	
-	return Y;
+	return Res;
 }
 
 void DptUpdateComb() {
