@@ -105,11 +105,7 @@ int main() {
         DptAffectAll();
         
         curvect++;
-        toggleClock();
-        
-        //printf(" - ALUOut = %d\n", DptALUOut);
-        //printf(" - Regfile[$s0] = %s\n", inttostr(DptRegFile[16]));
-        
+        toggleClock();        
 	}
 	
 	SAV_GENPAT();
